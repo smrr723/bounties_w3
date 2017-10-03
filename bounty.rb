@@ -33,9 +33,11 @@ def save()
     )
     RETURNING * ;
   "
-# tell the save function what your values are
+# tell the save function what your values are, which will be equal to the instance variables, which are part of the hashes of each bounty
+
   values = [@species, @homeworld, @danger_level, @collected_by]
   db.prepare('save', sql)
+  # Line below assigns the database entry id to the id instance variable
   @id = db.exec_prepared("save", values)[0]['id'].to_i
   db.close()
 
@@ -74,4 +76,20 @@ def update()
   db.prepare("update", sql)
   db.exec_prepared("update", values)
   db.close()
+end
+
+def self.find(species)
+  db = PG.connect({dbname: 'bounties', host: 'localhost'})
+  sql = "SELECT * FROM bounties WHERE species = $1"
+  values = [species]
+  db.prepare("find", sql)
+  result = db.exec_prepared("find", values)
+  db.close()
+  return result.map {|bounty| Bounty.new(bounty)}
+
+
+end
+
+
+
 end

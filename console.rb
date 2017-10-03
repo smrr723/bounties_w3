@@ -1,6 +1,7 @@
 require 'pry-byebug'
 require_relative 'bounty'
 
+# class method because its a self.method in bounty.rb
 Bounty.delete_all()
 
 bounty1 = Bounty.new({
